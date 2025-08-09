@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="tr" >
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>3D Efektli Timeline Slider</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+
+    * {
+      box-sizing: border-box;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: #fafafa;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .slider-container {
+      width: 90vw;
+      max-width: 720px;
+      height: 400px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 30px;
+      perspective: 1400px;
+      touch-action: none;
+    }
+    .lines-wrapper {
+      position: relative;
+      width: 100%;
+      height: 110px;
+      display: flex;
+      align-items: flex-end;
+      gap: 24px;
+      overflow: hidden;
+      padding: 0 10px;
+      cursor: grab;
+      user-select:none;
+      perspective: 1400px;
+    }
+    .lines-wrapper:active {
+      cursor: grabbing;
+    }
+    .line {
+      flex-shrink: 0;
+      width: 6px;
+      background: #888;
+      border-radius: 3px;
+      height: 60px;
+      opacity: 0.3;
+      transform-origin: center bottom;
+      transform-style: preserve-3d;
+      transition: height 0.3s ease, opacity 0.3s ease, background-color 0.3s ease, transform 0.3s ease;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+    }
+    .content-wrapper {
+      position: relative;
+      width: 100%;
+      height: 270px;
+      overflow: hidden;
+    }
+    .content-slide {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%) scale(0.8);
+      opacity: 0;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      width: 260px;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .content-slide.active {
+      opacity: 1;
+      transform: translateX(-50%) scale(1);
+      pointer-events: auto;
+      z-index: 10;
+    }
+    .date {
+      font-weight: 700;
+      font-size: 22px;
+      color: #222;
+      margin-bottom: 14px;
+      user-select:none;
+    }
+    .photo {
+      width: 260px;
+      height: 260px;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+      background: #eee;
+      transition: box-shadow 0.3s ease;
+      user-select:none;
+    }
+    .photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      user-select:none;
+    }
+  </style>
+</head>
+<body>
+
+<div class="slider-container" id="sliderContainer">
+  <div class="lines-wrapper" id="linesWrapper" aria-label="Tarih çizgileri sliderı">
+  </div>
+
+  <div class="content-wrapper" id="contentWrapper">
+  </div>
+</div>
+
+<script>
+  const events = [
+    { date: "5 Temmuz", photo: "https://via.placeholder.com/260?text=5+Temmuz" },
+    { date: "11 Temmuz", photo: "https://via.placeholder.com/260?text=11+Temmuz" },
+    { date: "15 Temmuz", photo: "https://via.placeholder.com/260?text=15+Temmuz" },
+    { date: "20 Temmuz", photo: "https://via.placeholder.com/260?text=20+Temmuz" },
+    { date: "25 Temmuz", photo: "https://via.placeholder.com/260?text=25+Temmuz" },
+    { date: "31 Temmuz", photo: "https://via.placeholder.com/260?text=31+Temmuz" },
+    { date: "3 Ağustos", photo: "https://via.placeholder.com/260?text=3+Ağustos" },
+    { date: "7 Ağustos", photo: "https://via.placeholder.com/260?text=7+Ağustos" },
+    { date: "10 Ağustos", photo: "https://via.placeholder.com/260?text=10+Ağustos" },
+    { date: "15 Ağustos", photo: "https://via.placeholder.com/260?text=15+Ağustos" },
+    { date: "20 Ağustos", photo: "https://via.placeholder.com/260?text=20+Ağustos" },
+    { date: "25 Ağustos", photo: "https://via.placeholder.com/260?text=25+Ağustos" },
+    { date: "30 Ağustos", photo: "https://via.placeholder.com/260?text=30+Ağustos" },
+    { date: "5 Eylül", photo: "https://via.placeholder.com/260?text=5+Eylül" }
+  ];
+
+  const linesWrapper = document.getElementById('linesWrapper');
+  const contentWrapper = document.getElementById('contentWrapper');
+
+  events.forEach((event, i) => {
+    const line = document.createElement('div');
+    line.classList.add('line');
+    line.dataset.index = i;
+    linesWrapper.appendChild(line);
+
+    const slide = document.createElement('div');
+    slide.classList.add('content-slide');
+    slide.dataset.index = i;
+    slide.innerHTML = `
+      <div class="date">${event.date}</div>
+      <div class="photo"><img src="${event.photo}" alt="${event.date}"></div>
+    `;
+    contentWrapper.appendChild(slide);
+  });
+
+  const lines = Array.from(document.querySelectorAll('.line'));
+  const slides = Array.from(document.querySelectorAll('.content-slide'));
+
+  let currentIndex = 0;
+
+  function updateVisuals() {
+    lines.forEach((line, i) => {
+      if(i === currentIndex) {
+        line.style.height = "100px";
+        line.style.opacity = "1";
+        line.style.backgroundColor = "#222";
+        line.style.transform = "rotateY(0deg) scaleY(1.3)";
+        line.style.zIndex = "10";
+        line.style.boxShadow = "0 6px 15px rgba(0,0,0,0.4)";
+      } else {
+        const diff = i - currentIndex;
+        let rotate = diff > 0 ? 25 : -25;
+        let scaleY = 0.7;
+        let opacity = 0.3;
+        let height = 50;
+        let shadow = "0 1px 3px rgba(0,0,0,0.15)";
+
+        if(Math.abs(diff) > 3) {
+          opacity = 0;
+          height = 0;
+          shadow = "none";
+        }
+
+        line.style.height = height + "px";
+        line.style.opacity = opacity;
+        line.style.backgroundColor = "#888";
+        line.style.transform = `rotateY(${rotate}deg) scaleY(${scaleY})`;
+        line.style.zIndex = "1";
+        line.style.boxShadow = shadow;
+      }
+    });
+
+    slides.forEach((slide, i) => {
+      if(i === currentIndex) {
+        slide.classList.add('active');
+      } else {
+        slide.classList.remove('active');
+      }
+    });
+  }
+
+  function snapToIndex(index) {
+    if(index < 0) index = 0;
+    if(index >= lines.length) index = lines.length -1;
+    currentIndex = index;
+    updateVisuals();
+  }
+
+  // Touch events
+
+  let startTouchX = 0;
+  let accumulatedDeltaX = 0;
+  let isTouching = false;
+
+  const threshold = 40;
+
+  linesWrapper.addEventListener('touchstart', e => {
+    if(e.touches.length !== 1) return;
+    isTouching = true;
+    startTouchX = e.touches[0].pageX;
+    accumulatedDeltaX = 0;
+  }, {passive:true});
+
+  linesWrapper.addEventListener('touchmove', e => {
+    if(!isTouching) return;
+    const touchX = e.touches[0].pageX;
+    const deltaX = touchX - startTouchX;
+    accumulatedDeltaX = deltaX;
+
+    let slidesToMove = Math.floor(Math.abs(accumulatedDeltaX) / threshold);
+
+    if(slidesToMove > 0) {
+      if(accumulatedDeltaX > 0) {
+        snapToIndex(currentIndex - slidesToMove);
+      } else {
+        snapToIndex(currentIndex + slidesToMove);
+      }
+      startTouchX = touchX;
+      accumulatedDeltaX = 0;
+    }
+  }, {passive:true});
+
+  linesWrapper.addEventListener('touchend', e => {
+    isTouching = false;
+    accumulatedDeltaX = 0;
+  }, {passive:true});
+
+  updateVisuals();
+</script>
+
+</body>
+</html>
