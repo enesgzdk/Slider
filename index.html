@@ -22,8 +22,8 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
-      overflow: hidden;
+      min-height: 100vh;   /* sayfa en az ekran boyunda olur, taşarsa uzar */
+      overflow-x: hidden;
     }
     .slider-container {
       width: 90vw;
@@ -130,7 +130,7 @@
 
 <script>
   const events = [
-    { date: "10 Temmuz", photo: "22t.jpeg" },
+    { date: "10 Temmuz", photo: "10t.jpeg" },
     { date: "11 Temmuz", photo: "11t.jpeg" },
     { date: "12 Temmuz", photo: "12t.jpeg" },
     { date: "15 Temmuz", photo: "15t.jpeg" },
