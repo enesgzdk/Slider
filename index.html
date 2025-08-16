@@ -19,15 +19,16 @@
       margin: 0;
       font-family: 'Inter', sans-serif;
       background: #fafafa;
-      /* display:flex ve align-items kaldırıldı */
-      overflow-x: hidden; /* sadece yatay taşmayı gizle */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
     }
-    
     .slider-container {
       width: 90vw;
       max-width: 720px;
-      /* height kaldırıldı */
-      min-height: 400px; /* opsiyonel, minimum boyut */
+      height: 400px;
       display: flex;
       flex-direction: column;
       align-items: center;
