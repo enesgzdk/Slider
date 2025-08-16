@@ -19,32 +19,22 @@
       margin: 0;
       font-family: 'Inter', sans-serif;
       background: #fafafa;
-      
       display: flex;
       justify-content: center;
-      align-items: center; /* üstteki konum korunuyor */
-      
-      min-height: 100vh;  /* ekran kadar minimum yükseklik */
-      height: auto;        /* içerik kadar yükseklik */
-      overflow-x: hidden;  /* yatay taşmayı engelle */
-      overflow-y: auto;    /* dikey taşmaya izin ver, alt kesik yok */
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
     }
-    
     .slider-container {
       width: 90vw;
       max-width: 720px;
-      
-      height: auto;       /* içerik kadar yükseklik */
+      height: 400px;
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 30px;
-      
       perspective: 1400px;
       touch-action: none;
-      
-      margin: 0 auto;     /* yatayda ortalanmış */
-      padding-bottom: 20px; /* alt kesik hissini engelle */
     }
     .lines-wrapper {
       position: relative;
