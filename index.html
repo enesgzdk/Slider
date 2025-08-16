@@ -26,44 +26,31 @@ body {
 .slider-container {
   width: 90vw;
   max-width: 720px;
-  height: 75vh; /* container biraz daha kısa */
+  height: 75vh; /* container daha kısa */
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 15px;
   justify-content: flex-start; /* üstten başlasın */
+  gap: 15px;
   perspective: 1400px;
 }
 
+/* İçerik üstte */
 .content-wrapper {
   position: relative;
   width: 100%;
-  flex: 0 0 auto; /* yükseklik sabit, büyümez */
+  flex: 0 0 auto;
   display: flex;
   justify-content: center;
   align-items: center;
   overflow: visible;
-  margin-bottom: 10px;
-}
-
-.lines-wrapper {
-  position: relative;
-  width: 100%;
-  height: 90px; /* biraz daha küçük */
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  overflow: hidden;
-  padding: 0 10px;
-  cursor: grab;
-  perspective: 1400px;
 }
 
 .content-slide {
   position: absolute;
   top: 0;
   left: 50%;
-  transform: translateX(-50%) scale(0.8);
+  transform: translateX(-50%) scale(0.85);
   opacity: 0;
   transition: opacity 0.3s ease, transform 0.3s ease;
   width: 300px;
@@ -104,6 +91,18 @@ body {
 }
 
 /* Çubuklar altta */
+.lines-wrapper {
+  position: relative;
+  width: 100%;
+  height: 90px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  overflow: hidden;
+  padding: 0 10px;
+  cursor: grab;
+  perspective: 1400px;
+}
 
 .line {
   flex: 1;
