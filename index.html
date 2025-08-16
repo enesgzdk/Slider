@@ -19,17 +19,15 @@
       margin: 0;
       font-family: 'Inter', sans-serif;
       background: #fafafa;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start; /* artık üstten hizalanıyor */
-      min-height: 100vh;       /* sayfa en az ekran boyu kadar */
-      overflow-x: hidden;      /* yatay taşmayı engelle */
+      /* display:flex ve align-items kaldırıldı */
+      overflow-x: hidden; /* sadece yatay taşmayı gizle */
     }
+    
     .slider-container {
       width: 90vw;
       max-width: 720px;
-      min-height: 400px; /* sabitleme yerine min-height */
-      height: auto;      /* içerik kadar uzasın */
+      /* height kaldırıldı */
+      min-height: 400px; /* opsiyonel, minimum boyut */
       display: flex;
       flex-direction: column;
       align-items: center;
